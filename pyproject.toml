@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sandra-proof-runtime"
+name = "coding-agent-proof-gate"
 version = "0.1.0"
 description = "Proof-gated task completion for coding agents."
 readme = "README.md"

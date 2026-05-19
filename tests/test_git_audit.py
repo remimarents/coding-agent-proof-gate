@@ -1,4 +1,4 @@
-from sandra_proof_runtime.git_audit import changed_files_from_git_status, sanitize_changed_files
+from coding_agent_proof_gate.git_audit import changed_files_from_git_status, sanitize_changed_files
 
 
 def test_changed_files_from_git_status_handles_basic_status():

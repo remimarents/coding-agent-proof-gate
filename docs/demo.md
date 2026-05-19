@@ -3,7 +3,7 @@
 Set up a clean repo where the agent claims a parser fix but no files changed.
 
 ```bash
-python3 -m sandra_proof_runtime.cli \
+python3 -m coding_agent_proof_gate.cli \
   --repo /path/to/repo \
   --contract-json examples/failure-cases/no-changed-files.json
 ```

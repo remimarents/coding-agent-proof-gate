@@ -1,8 +1,8 @@
 import subprocess
 from pathlib import Path
 
-from sandra_proof_runtime import ProofGate, TaskContract, VerificationCommand
-from sandra_proof_runtime.models import ReportClaim
+from coding_agent_proof_gate import ProofGate, TaskContract, VerificationCommand
+from coding_agent_proof_gate.models import ReportClaim
 
 
 def init_repo(tmp_path: Path) -> Path:

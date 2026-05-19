@@ -1,8 +1,8 @@
-# Sandra Proof Runtime
+# Coding Agent Proof Gate
 
 **A coding agent is not done until the repository proves it.**
 
-Sandra Proof Runtime is a small, framework-neutral proof gate for autonomous coding agents. It blocks task completion when the agent claims success but the repo, commands, or machine-readable receipt do not support that claim.
+Coding Agent Proof Gate is a small, framework-neutral proof gate for autonomous coding agents. It blocks task completion when the agent claims success but the repo, commands, or machine-readable receipt do not support that claim.
 
 This repository is only a small extracted module from a larger local system. It is intentionally narrow: the goal is to publish the proof-gate core, not the full assistant stack.
 
@@ -45,13 +45,13 @@ python3 -m pip install -e .
 python3 -m pytest -q
 
 # without install, from a checkout:
-PYTHONPATH=src python3 -m sandra_proof_runtime.cli --help
+PYTHONPATH=src python3 -m coding_agent_proof_gate.cli --help
 ```
 
 Run the gate against a JSON contract:
 
 ```bash
-python3 -m sandra_proof_runtime.cli \
+python3 -m coding_agent_proof_gate.cli \
   --repo . \
   --contract-json examples/task-contract.json
 ```
@@ -59,7 +59,7 @@ python3 -m sandra_proof_runtime.cli \
 Or pass a minimal contract on the command line:
 
 ```bash
-python3 -m sandra_proof_runtime.cli \
+python3 -m coding_agent_proof_gate.cli \
   --repo . \
   --task-id parser-fix \
   --goal "Fix the parser bug" \
@@ -107,7 +107,7 @@ The command exits:
 
 A task receipt is useful, but if the same agent produces both the work and the receipt, the receipt can repeat the hallucination.
 
-Sandra Proof Runtime treats the receipt as a claim, not proof. The gate checks that claim against external evidence from Git and command execution.
+Coding Agent Proof Gate treats the receipt as a claim, not proof. The gate checks that claim against external evidence from Git and command execution.
 
 ## Integration Pattern
 
