@@ -4,6 +4,8 @@
 
 Sandra Proof Runtime is a small, framework-neutral proof gate for autonomous coding agents. It blocks task completion when the agent claims success but the repo, commands, or machine-readable receipt do not support that claim.
 
+This repository is only a small extracted module from a larger local system. It is intentionally narrow: the goal is to publish the proof-gate core, not the full assistant stack.
+
 It is designed for the failure mode every coding-agent operator eventually sees:
 
 ```text
@@ -114,6 +116,21 @@ Sandra Proof Runtime treats the receipt as a claim, not proof. The gate checks t
 3. Agent returns a structured completion receipt.
 4. Proof gate independently checks repo state and commands.
 5. Runtime accepts completion only if the gate passes.
+
+## Larger System
+
+This module was extracted from a larger orchestration stack that also includes:
+
+- task routing and planning
+- step execution and retry handling
+- Git status and diff audit helpers
+- verification command runners
+- claim/receipt validation
+- report generation
+- failure-case tracking
+- local agent supervision and progress checks
+- workspace/runtime separation
+- messaging and operator-facing integrations
 
 ## Status
 
