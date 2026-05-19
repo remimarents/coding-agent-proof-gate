@@ -1,0 +1,10 @@
+{
+  "task_id": "demo-parser-fix",
+  "goal": "Fix the parser bug and prove the fix.",
+  "declared_changed_files": ["src/parser.py"],
+  "verification_commands": [
+    {"command": "python -m pytest tests/test_parser.py -q", "expected_exit_code": 0}
+  ],
+  "require_changed_files": true,
+  "require_verification": true
+}
