@@ -2,7 +2,7 @@
 
 **A coding agent is not done until the repository proves it.**
 
-Coding Agent Proof Gate is a small, framework-neutral proof gate for autonomous coding agents. It blocks task completion when the agent claims success but the repo, commands, or machine-readable receipt do not support that claim.
+Coding Agent Proof Gate is a small, framework-neutral proof gate for OpenClaw and other autonomous coding agents. It blocks task completion when the agent claims success but the repo, commands, or machine-readable receipt do not support that claim.
 
 This repository is only a small extracted module from a larger local system. It is intentionally narrow: the goal is to publish the proof-gate core, not the full assistant stack.
 
@@ -101,7 +101,8 @@ The command exits:
 - `unexpected_changed_files:README.md`
 - `verification_not_run`
 - `verification_failed:python3 -m pytest tests/test_parser.py -q`
-- `claim_unsupported:Parser bug is fixed and tests passed.:verification_not_run_or_failed`
+- `claim_unsupported:Parser bug is fixed and tests passed.:verification_not_run`
+- `claim_unsupported:Parser bug is fixed and tests passed.:verification_failed`
 
 ## Why Receipts Alone Are Not Enough
 
@@ -131,6 +132,8 @@ This module was extracted from a larger orchestration stack that also includes:
 - local agent supervision and progress checks
 - workspace/runtime separation
 - messaging and operator-facing integrations
+
+The larger system uses OpenClaw as one deployment target, but this package is intentionally usable without OpenClaw.
 
 ## Status
 

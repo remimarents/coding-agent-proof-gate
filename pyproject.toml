@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "coding-agent-proof-gate"
 version = "0.1.0"
-description = "Proof-gated task completion for coding agents."
+description = "Proof-gated task completion for OpenClaw and other coding agents."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [{name = "Remi Marents"}]
-keywords = ["ai-agents", "coding-agents", "verification", "proof", "agent-orchestration"]
+keywords = ["openclaw", "ai-agents", "coding-agents", "verification", "proof", "agent-orchestration"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
