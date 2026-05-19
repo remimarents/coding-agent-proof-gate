@@ -72,6 +72,23 @@ def test_gate_blocks_report_claim_that_requires_verification(tmp_path):
     result = ProofGate(repo).evaluate(contract)
     assert not result.ok
     assert any(item.startswith("claim_unsupported:All tests passed.") for item in result.blockers)
+    assert "claim_unsupported:All tests passed.:verification_not_run" in result.blockers
+
+
+def test_gate_reports_failed_verification_distinctly_from_missing_verification(tmp_path):
+    repo = init_repo(tmp_path)
+    (repo / "src" / "demo.py").write_text("VALUE = 2\n", encoding="utf-8")
+    contract = TaskContract(
+        task_id="demo",
+        goal="Change demo.py",
+        declared_changed_files=["src/demo.py"],
+        verification_commands=[VerificationCommand("python3 -c 'raise SystemExit(7)'")],
+        report_claims=[ReportClaim("All tests passed.", requires_verification=True)],
+    )
+    result = ProofGate(repo).evaluate(contract)
+    assert not result.ok
+    assert any(item.startswith("verification_failed:") for item in result.blockers)
+    assert "claim_unsupported:All tests passed.:verification_failed" in result.blockers
 
 
 def test_gate_blocks_unexpected_files_even_when_declared_file_changed(tmp_path):

@@ -96,8 +96,10 @@ class ProofGate:
                     evidence.append("all verification commands passed")
                 elif any_verification_ok:
                     blockers.append("some_verification_failed")
+                elif verification_results:
+                    blockers.append("verification_failed")
                 else:
-                    blockers.append("verification_not_run_or_failed")
+                    blockers.append("verification_not_run")
             if claim.requires_clean_declared_files:
                 if missing:
                     blockers.append("declared_files_not_changed:" + ",".join(missing))
