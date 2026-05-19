@@ -1,31 +1,127 @@
 # Sandra Proof Runtime
 
-Proof-gated task completion for coding agents.
+**A coding agent is not done until the repository proves it.**
 
-Coding agents can report success even when no relevant files changed, verification did not run, or the final report overclaims what happened. This package provides a small runtime pattern for refusing task completion until external evidence supports it.
+Sandra Proof Runtime is a small, framework-neutral proof gate for autonomous coding agents. It blocks task completion when the agent claims success but the repo, commands, or machine-readable receipt do not support that claim.
 
-## Core Idea
+It is designed for the failure mode every coding-agent operator eventually sees:
 
-A coding task is not complete because the agent says it is complete. It is complete when a proof gate can verify:
-
-- declared changed files match `git status` / `git diff` evidence
-- verification commands actually ran and returned expected exit codes
-- missing evidence blocks completion instead of becoming a success report
-- the proof is machine-readable and auditable
-
-## Minimal Example
-
-```bash
-python -m sandra_proof_runtime.cli \
-  --repo . \
-  --task-id demo \
-  --goal "Fix the parser bug" \
-  --changed-file src/parser.py \
-  --verify "python -m pytest tests/test_parser.py -q"
+```text
+Done. Tests passed. Ready to merge.
 ```
 
-The command exits `0` only when the declared files are actually changed and verification passes. Otherwise it exits non-zero and reports blockers such as `no_changed_files`, `verification_not_run`, or `declared_files_not_changed`.
+But in reality:
+
+- no relevant files changed
+- tests were not run
+- the final answer overclaimed what happened
+- the agent edited the wrong file
+- the task receipt exists, but nobody checked it against external evidence
+
+This project turns that into a hard gate.
+
+## What It Does
+
+Given a task contract, the proof gate checks:
+
+- declared changed files vs. actual `git status --short`
+- unexpected files changed outside the declared scope
+- verification commands that actually ran and returned expected exit codes
+- final report claims vs. machine-readable evidence
+- missing evidence as a blocker, not a warning
+
+## What It Is Not
+
+This is not an agent framework, reputation graph, prompt pack, dashboard, or browser automation layer.
+
+It is the small enforcement layer you put after an agent says "done" and before your system accepts that result.
+
+## Quickstart
+
+```bash
+python3 -m pip install -e .
+python3 -m pytest -q
+
+# without install, from a checkout:
+PYTHONPATH=src python3 -m sandra_proof_runtime.cli --help
+```
+
+Run the gate against a JSON contract:
+
+```bash
+python3 -m sandra_proof_runtime.cli \
+  --repo . \
+  --contract-json examples/task-contract.json
+```
+
+Or pass a minimal contract on the command line:
+
+```bash
+python3 -m sandra_proof_runtime.cli \
+  --repo . \
+  --task-id parser-fix \
+  --goal "Fix the parser bug" \
+  --changed-file src/parser.py \
+  --verify "python3 -m pytest tests/test_parser.py -q" \
+  --claim "Parser bug is fixed and tests passed"
+```
+
+The command exits:
+
+- `0` when the proof gate accepts completion
+- `2` when evidence is missing or contradicted
+
+## Contract Example
+
+```json
+{
+  "task_id": "demo-parser-fix",
+  "goal": "Fix the parser bug and prove the fix.",
+  "declared_changed_files": ["src/parser.py"],
+  "verification_commands": [
+    {"command": "python3 -m pytest tests/test_parser.py -q", "expected_exit_code": 0}
+  ],
+  "report_claims": [
+    {
+      "claim": "Parser bug is fixed and tests passed.",
+      "requires_changed_files": true,
+      "requires_verification": true,
+      "requires_clean_declared_files": true
+    }
+  ]
+}
+```
+
+## Typical Blockers
+
+- `no_changed_files`
+- `declared_files_not_changed:src/parser.py`
+- `unexpected_changed_files:README.md`
+- `verification_not_run`
+- `verification_failed:python3 -m pytest tests/test_parser.py -q`
+- `claim_unsupported:Parser bug is fixed and tests passed.:verification_not_run_or_failed`
+
+## Why Receipts Alone Are Not Enough
+
+A task receipt is useful, but if the same agent produces both the work and the receipt, the receipt can repeat the hallucination.
+
+Sandra Proof Runtime treats the receipt as a claim, not proof. The gate checks that claim against external evidence from Git and command execution.
+
+## Integration Pattern
+
+1. Agent receives a task contract.
+2. Agent edits files and runs checks.
+3. Agent returns a structured completion receipt.
+4. Proof gate independently checks repo state and commands.
+5. Runtime accepts completion only if the gate passes.
 
 ## Status
 
-This is an extracted, minimal public-core version of a local coding-agent supervision pattern. It intentionally excludes private agent configuration, messaging integrations, memory, credentials, and browser automation.
+Early extracted core. The current focus is the smallest useful proof-gate primitive for coding agents.
+
+Intentionally excluded:
+
+- private agent/personality configuration
+- messaging integrations
+- credentials, memory, or local operations
+- browser automation
